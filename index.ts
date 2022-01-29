@@ -18,7 +18,7 @@ const pulumiMergeRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/merge',
         Principal: { Federated: oidcProvider.arn },
         Condition: {
           StringLike: {
-            'token.actions.githubusercontent.com:sub': ['repo:thepatrick/thepatrick.cloud.tf:ref:refs/heads/main'],
+            'token.actions.githubusercontent.com:sub': ['repo:thepatrick/thepatrick.cloud.tf:ref:refs/heads/live'],
           },
         },
       },
