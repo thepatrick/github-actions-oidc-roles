@@ -1,12 +1,12 @@
 import * as aws from '@pulumi/aws';
 
-export const oidcProvider = new aws.iam.OpenIdConnectProvider('github-oidc', {
+const oidcProvider = new aws.iam.OpenIdConnectProvider('github-oidc', {
   url: 'https://token.actions.githubusercontent.com',
   clientIdLists: ['sts.amazonaws.com'],
   thumbprintLists: ['6938fd4d98bab03faadb97b34396831e3780aea1'],
 });
 
-export const pulumiMergeRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/merge', {
+const pulumiMergeRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/merge', {
   namePrefix: 'thepatrick-cloud-tf-actions-merge',
   managedPolicyArns: ['arn:aws:iam::aws:policy/AdministratorAccess'],
   assumeRolePolicy: {
@@ -26,7 +26,7 @@ export const pulumiMergeRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/
   },
 });
 
-export const pulumiPreviewRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/preview', {
+const pulumiPreviewRole = new aws.iam.Role('thepatrick/thepatrick.cloud.tf/preview', {
   namePrefix: 'thepatrick-cloud-tf-actions-pr',
   managedPolicyArns: ['arn:aws:iam::aws:policy/AdministratorAccess'],
   assumeRolePolicy: {
@@ -38,10 +38,13 @@ export const pulumiPreviewRole = new aws.iam.Role('thepatrick/thepatrick.cloud.t
         Principal: { Federated: oidcProvider.arn },
         Condition: {
           StringLike: {
-            'token.actions.githubusercontent.com:sub': ['repo:thepatrick/thepatrick.cloud.tf:ref:refs/heads/main'],
+            'token.actions.githubusercontent.com:sub': ['repo:thepatrick/thepatrick.cloud.tf:pull_request'],
           },
         },
       },
     ],
   },
 });
+
+export const pulumiMergeRoleARN = pulumiMergeRole.arn;
+export const pulumiPreviewRoleARN = pulumiPreviewRole.arn;
