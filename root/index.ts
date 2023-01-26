@@ -11,10 +11,25 @@ const oidcProvider = new aws.iam.OpenIdConnectProvider('github-oidc', {
   thumbprintLists: ['6938fd4d98bab03faadb97b34396831e3780aea1'],
 });
 
-new ssm.Parameter('github-oidc', {
+const oidcParameter = new ssm.Parameter('github-oidc', {
   name: 'github-oidc-provider',
   type: ParameterType.String,
   value: oidcProvider.arn,
+});
+
+const readGithubOIDCProvider = new aws.iam.Policy('read-github-oidc-provider', {
+  path: '/github-actions-root/',
+  name: 'ReadGithubOIDCProvider',
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['ssm:Get*'],
+        Resource: oidcParameter.arn,
+      },
+    ],
+  },
 });
 
 const iamManagement = new aws.iam.Policy('iam-management', {
@@ -56,7 +71,7 @@ const iamManagement = new aws.iam.Policy('iam-management', {
 const githubOidcRolesMerge = new aws.iam.Role('thepatrick/github-actions-oidc-roles/merge', {
   path: `/github-actions-root/thepatrick/`,
   name: 'github-actions-oidc-roles-merge',
-  managedPolicyArns: [iamManagement.arn],
+  managedPolicyArns: [iamManagement.arn, readGithubOIDCProvider.arn],
   assumeRolePolicy: {
     Version: '2012-10-17',
     Statement: [
