@@ -1,2 +1,6 @@
 /bin/
+/root/node_modules/
 /node_modules/
+
+.gitignore
+.dccache
