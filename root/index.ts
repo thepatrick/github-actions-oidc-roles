@@ -67,7 +67,7 @@ const githubOidcRolesMerge = new aws.iam.Role('thepatrick/github-actions-oidc-ro
         Condition: {
           StringLike: {
             'token.actions.githubusercontent.com:sub': [
-              'repo:thepatrick/github-actions-oidc-roles.cloud.tf:ref:refs/heads/main',
+              'repo:thepatrick/github-actions-oidc-roles:ref:refs/heads/main',
             ],
           },
         },
