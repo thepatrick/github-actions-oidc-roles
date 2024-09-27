@@ -22,12 +22,12 @@ jobs:
           role-to-assume: ${{ secrets.PULUMI_MERGE_ROLE_ARN }}
           role-session-name: art-merge
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
       - run: npm install
         working-directory: ./main
-      - uses: pulumi/actions@v4
+      - uses: pulumi/actions@v6
         id: pulumi
         with:
           command: up
